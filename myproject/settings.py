@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-qnjz#y$q*$a)^smz1rn)um@n+%eb*xcml(^&6&w#fmg=i-o7pp
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['gym-shop-gliu.onrender.com', 'localhost', '127.0.0.1']
 
 
 # Application definition
