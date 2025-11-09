@@ -27,6 +27,7 @@ SECRET_KEY = 'django-insecure-qnjz#y$q*$a)^smz1rn)um@n+%eb*xcml(^&6&w#fmg=i-o7pp
 DEBUG = True
 
 ALLOWED_HOSTS = ['gym-shop-gliu.onrender.com', 'localhost', '127.0.0.1']
+CSRF_TRUSTED_ORIGINS = ['https://gym-shop-gliu.onrender.com']
 
 
 # Application definition
