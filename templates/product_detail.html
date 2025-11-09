@@ -1,0 +1,30 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ product.name }}</title>
+    <link rel="stylesheet" href="{% static 'css/templatemo-training-studio.css' %}">
+    <style>
+        .product-detail { max-width:600px; margin:50px auto; padding:20px; border:1px solid #ccc; border-radius:8px; background:#fafafa; }
+        .buy-btn { background-color:#f04e30; color:white; border:none; padding:8px 12px; cursor:pointer; border-radius:4px; text-decoration:none; margin-top:15px; display:inline-block; }
+    </style>
+</head>
+<body>
+{% load static %}
+<section class="product-detail" style="padding:50px 0; background:#f9f9f9;">
+    <div class="container" style="max-width:800px; margin:auto; text-align:center;">
+        {% if product.image %}
+        <img src="{{ product.image.url }}" alt="{{ product.name }}" style="width:100%; max-height:400px; object-fit:cover; border-radius:8px; margin-bottom:20px;">
+        {% endif %}
+        <h2>{{ product.name }}</h2>
+        <p><strong>Price:</strong> ${{ product.price }}</p>
+        <p><strong>Rating:</strong> {{ product.rating }}/5</p>
+        <p>{{ product.description1 }}</p>
+        <p>{{ product.description2 }}</p>
+        <a href="#" class="buy-btn" style="display:inline-block; margin-top:15px; padding:10px 15px; background:#f04e30; color:#fff; text-decoration:none; border-radius:5px;">Buy Now</a>
+    </div>
+</section>
+
+</body>
+</html>

@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Admin Management Panel</title>
+<style>
+  body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; background: #f4f6f8; padding: 0; }
+  header { background: #007bff; color: white; padding: 20px; text-align: center; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+  main { width: 90%; max-width: 1000px; margin: 30px auto; }
+
+  #form-container { background: white; border-radius: 10px; padding: 25px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); text-align: center; }
+  #form-container h3 { margin-bottom: 20px; color: #333; }
+  #form-container input { width: 80%; padding: 10px; margin: 8px 0; border: 1px solid #ccc; border-radius: 6px; font-size: 15px; }
+
+  #button-group { margin-top: 15px; }
+  #button-group button { padding: 10px 16px; margin: 0 8px; border: none; font-size: 14px; border-radius: 6px; cursor: pointer; transition: 0.3s; }
+  #submit-btn { background-color: #28a745; color: white; }
+  #submit-btn:hover { background-color: #218838; }
+  #update-btn { background-color: #ffc107; color: #222; }
+  #update-btn:hover { background-color: #e0a800; }
+
+  table { width: 100%; margin-top: 40px; border-collapse: collapse; background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,0.1); table-layout: fixed; }
+  colgroup col.id-col { width: 8%; }
+  colgroup col.user-col { width: 22%; }
+  colgroup col.email-col { width: 25%; }
+  colgroup col.pw-col { width: 25%; }
+  colgroup col.action-col { width: 20%; }
+  th, td { padding: 15px; text-align: center; border-bottom: 1px solid #ddd; vertical-align: top; word-wrap: break-word; }
+  th { background-color: #007bff; color: white; font-size: 16px; }
+  .password-cell { white-space: normal; overflow-wrap: anywhere; text-align: left; font-family: monospace; font-size: 13px; color: #333; }
+  tr:hover { background-color: #f1f1f1; }
+  .edit { background-color: #17a2b8; color: white; }
+  .delete { background-color: #dc3545; color: white; }
+  .edit:hover { background-color: #138496; }
+  .delete:hover { background-color: #c82333; }
+
+  @media (max-width: 768px) {
+    #form-container input { width: 100%; }
+    table { font-size: 13px; }
+    th, td { padding: 10px; }
+    colgroup col.pw-col { width: 55%; }
+  }
+</style>
+</head>
+<body>
+<header>
+  <h1>Admin User Management</h1>
+</header>
+
+<main>
+  <div id="form-container">
+    <h3 id="form-title">Add / Update Admin User</h3>
+
+    <input type="text" id="username" placeholder="Enter Username" required />
+    <input type="email" id="email" placeholder="Enter Email" required />
+    <input type="password" id="password" placeholder="Enter Password" />
+
+    <div id="button-group">
+      <button id="submit-btn" onclick="addAdmin()">Add User</button>
+      <button id="update-btn" onclick="updateAdmin()" disabled>Update User</button>
+    </div>
+  </div>
+
+  <table>
+    <colgroup>
+      <col class="id-col">
+      <col class="user-col">
+      <col class="email-col">
+      <col class="pw-col">
+      <col class="action-col">
+    </colgroup>
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Username</th>
+        <th>Email</th>
+        <th>Password (Hashed)</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody id="admin-table-body"></tbody>
+  </table>
+</main>
+
+<script>
+let selectedId = null;
+
+function escapeHtml(str) {
+  if (!str) return '';
+  return String(str)
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+    .replaceAll("'", '&#39;');
+}
+
+async function fetchAdmins() {
+  try {
+    const res = await fetch("/api/admins/");
+    if (!res.ok) throw new Error('Failed to fetch admins');
+    const data = await res.json();
+    const tbody = document.getElementById("admin-table-body");
+    tbody.innerHTML = "";
+
+    if (!Array.isArray(data) || data.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="5">No admins found.</td></tr>`;
+      return;
+    }
+
+    data.forEach(admin => {
+      const row = document.createElement("tr");
+      row.innerHTML = `
+        <td>${admin.id}</td>
+        <td>${escapeHtml(admin.username)}</td>
+        <td>${escapeHtml(admin.email)}</td>
+        <td class="password-cell">${escapeHtml(admin.password)}</td>
+        <td>
+          <button class="edit" onclick="editAdmin(${admin.id}, '${escapeHtml(admin.username)}', '${escapeHtml(admin.email)}')">Edit</button>
+          <button class="delete" onclick="deleteAdmin(${admin.id})">Delete</button>
+        </td>
+      `;
+      tbody.appendChild(row);
+    });
+  } catch (err) {
+    console.error(err);
+    document.getElementById("admin-table-body").innerHTML = `<tr><td colspan="5">Error loading admins.</td></tr>`;
+  }
+}
+
+async function addAdmin() {
+  const username = document.getElementById("username").value.trim();
+  const email = document.getElementById("email").value.trim();
+  const password = document.getElementById("password").value.trim();
+
+  if (!username || !email || !password) {
+    alert("Please fill all fields!");
+    return;
+  }
+
+  const res = await fetch("/api/admins/add/", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ username, email, password })
+  });
+
+  const data = await res.json();
+  if (data.status === "success") {
+    document.getElementById("username").value = "";
+    document.getElementById("email").value = "";
+    document.getElementById("password").value = "";
+    fetchAdmins();
+  } else {
+    alert(data.message || "Failed to add admin");
+  }
+}
+
+function editAdmin(id, username, email) {
+  selectedId = id;
+  document.getElementById("username").value = username;
+  document.getElementById("email").value = email;
+  document.getElementById("password").value = "";
+  document.getElementById("update-btn").disabled = false;
+}
+
+async function updateAdmin() {
+  if (!selectedId) return alert("Select a user to update");
+
+  const username = document.getElementById("username").value.trim();
+  const email = document.getElementById("email").value.trim();
+  const password = document.getElementById("password").value.trim();
+
+  if (!username || !email) {
+    alert("Username and Email cannot be empty!");
+    return;
+  }
+
+  const res = await fetch(`/api/admins/update/${selectedId}/`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ username, email, password })
+  });
+
+  const data = await res.json();
+  if (data.status === "success") {
+    selectedId = null;
+    document.getElementById("username").value = "";
+    document.getElementById("email").value = "";
+    document.getElementById("password").value = "";
+    document.getElementById("update-btn").disabled = true;
+    fetchAdmins();
+  } else {
+    alert(data.message || "Failed to update admin");
+  }
+}
+
+async function deleteAdmin(id) {
+  if (!confirm("Are you sure you want to delete this admin?")) return;
+
+  const res = await fetch(`/api/admins/delete/${id}/`, { method: "DELETE" });
+  const data = await res.json();
+  if (data.status === "success") {
+    fetchAdmins();
+  } else {
+    alert(data.message || "Failed to delete admin");
+  }
+}
+
+// Initial fetch
+fetchAdmins();
+</script>
+</body>
+</html>
