@@ -1,0 +1,9 @@
+Django>=5.0
+gunicorn
+whitenoise
+asgiref
+sqlparse
+tzdata
+pillow
+requests
+django-crispy-forms
