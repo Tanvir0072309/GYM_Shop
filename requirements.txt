@@ -8,4 +8,5 @@ pillow
 requests
 django-crispy-forms
 Django>=5.0,<6.0
+Django==4.2.16
 django-adminlte3>=0.1.6
