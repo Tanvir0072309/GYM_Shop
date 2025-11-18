@@ -1,4 +1,4 @@
-Django>=5.0
+Django==4.2.16
 gunicorn
 whitenoise
 asgiref
@@ -6,7 +6,5 @@ sqlparse
 tzdata
 pillow
 requests
-django-crispy-forms
-Django>=5.0,<6.0
-Django==4.2.16
-django-adminlte3>=0.1.6
+django-crispy-forms==2.1
+django-adminlte3==0.1.6
