@@ -5,24 +5,129 @@
     <meta charset="UTF-8">
     <title>{{ product.name }}</title>
     <link rel="stylesheet" href="{% static 'css/templatemo-training-studio.css' %}">
+
     <style>
-        .product-detail { max-width:600px; margin:50px auto; padding:20px; border:1px solid #ccc; border-radius:8px; background:#fafafa; }
-        .buy-btn { background-color:#f04e30; color:white; border:none; padding:8px 12px; cursor:pointer; border-radius:4px; text-decoration:none; margin-top:15px; display:inline-block; }
+        body {
+            background: #f3f3f3;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .product-detail {
+            max-width: 900px;
+            margin: 60px auto;
+            padding: 0;
+        }
+
+        .product-card {
+            background: #ffffff;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            animation: fadeIn 0.7s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            0% { opacity: 0; transform: translateY(20px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        .product-image {
+            width: 100%;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .product-image img {
+            width: 100%;
+            max-height: 420px;
+            object-fit: cover;
+            border-radius: 12px;
+            transition: transform .4s ease;
+        }
+
+        .product-image img:hover {
+            transform: scale(1.05);
+        }
+
+        .product-title {
+            font-size: 32px;
+            font-weight: 700;
+            margin-top: 20px;
+            color: #222;
+        }
+
+        .price {
+            font-size: 24px;
+            color: #f04e30;
+            font-weight: 700;
+            margin: 10px 0;
+        }
+
+        .rating {
+            display: inline-block;
+            background: #ffd700;
+            color: #222;
+            padding: 4px 10px;
+            font-size: 15px;
+            border-radius: 6px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .descriptions p {
+            font-size: 16px;
+            line-height: 1.7;
+            color: #444;
+            margin-bottom: 12px;
+        }
+
+        .buy-btn {
+            background: linear-gradient(135deg, #ff6133, #ff2d00);
+            color: white;
+            border: none;
+            padding: 14px 25px;
+            cursor: pointer;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 18px;
+            transition: .3s ease;
+            display: inline-block;
+            margin-top: 20px;
+        }
+
+        .buy-btn:hover {
+            background: linear-gradient(135deg, #ff2d00, #ff6133);
+            transform: translateY(-4px);
+            box-shadow: 0 10px 20px rgba(255, 70, 30, 0.4);
+        }
     </style>
 </head>
+
 <body>
-{% load static %}
-<section class="product-detail" style="padding:50px 0; background:#f9f9f9;">
-    <div class="container" style="max-width:800px; margin:auto; text-align:center;">
-        {% if product.image %}
-        <img src="{{ product.image.url }}" alt="{{ product.name }}" style="width:100%; max-height:400px; object-fit:cover; border-radius:8px; margin-bottom:20px;">
-        {% endif %}
-        <h2>{{ product.name }}</h2>
-        <p><strong>Price:</strong> ${{ product.price }}</p>
-        <p><strong>Rating:</strong> {{ product.rating }}/5</p>
-        <p>{{ product.description1 }}</p>
-        <p>{{ product.description2 }}</p>
-        <a href="#" class="buy-btn" style="display:inline-block; margin-top:15px; padding:10px 15px; background:#f04e30; color:#fff; text-decoration:none; border-radius:5px;">Buy Now</a>
+
+<section class="product-detail">
+    <div class="product-card">
+
+        <div class="product-image">
+            {% if product.image %}
+            <img src="{{ product.image.url }}" alt="{{ product.name }}">
+            {% endif %}
+        </div>
+
+        <h2 class="product-title">{{ product.name }}</h2>
+
+        <div class="price">₹{{ product.price }}</div>
+
+        <div class="rating">⭐ {{ product.rating }}/5</div>
+
+        <div class="descriptions">
+            <p>{{ product.description1 }}</p>
+            <p>{{ product.description2 }}</p>
+        </div>
+
+        <a href="#" class="buy-btn">Buy Now</a>
+
     </div>
 </section>
 
