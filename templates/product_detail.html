@@ -4,132 +4,207 @@
 <head>
     <meta charset="UTF-8">
     <title>{{ product.name }}</title>
-    <link rel="stylesheet" href="{% static 'css/templatemo-training-studio.css' %}">
 
     <style>
         body {
-            background: #f3f3f3;
-            font-family: 'Poppins', sans-serif;
-        }
-
-        .product-detail {
-            max-width: 900px;
-            margin: 60px auto;
+            margin: 0;
             padding: 0;
+            font-family: 'Poppins', sans-serif;
+            background: #f5f5f5;
         }
 
-        .product-card {
-            background: #ffffff;
-            border-radius: 15px;
-            padding: 25px;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
-            animation: fadeIn 0.7s ease-in-out;
+        .product-container {
+            max-width: 1100px;
+            margin: 60px auto;
+            display: flex;
+            gap: 40px;
+            padding: 20px;
         }
 
-        @keyframes fadeIn {
-            0% { opacity: 0; transform: translateY(20px); }
-            100% { opacity: 1; transform: translateY(0); }
-        }
-
+        /* LEFT IMAGE */
         .product-image {
-            width: 100%;
-            border-radius: 12px;
-            overflow: hidden;
+            flex: 1.2;
         }
 
         .product-image img {
             width: 100%;
-            max-height: 420px;
-            object-fit: cover;
             border-radius: 12px;
-            transition: transform .4s ease;
+            max-height: 600px;
+            object-fit: cover;
+            transition: 0.4s ease;
         }
 
         .product-image img:hover {
-            transform: scale(1.05);
+            transform: scale(1.03);
         }
 
-        .product-title {
-            font-size: 32px;
+        /* RIGHT DETAILS */
+        .product-details {
+            flex: 1;
+            padding-top: 20px;
+        }
+
+        .product-details h2 {
+            font-size: 34px;
             font-weight: 700;
-            margin-top: 20px;
-            color: #222;
-        }
-
-        .price {
-            font-size: 24px;
-            color: #f04e30;
-            font-weight: 700;
-            margin: 10px 0;
-        }
-
-        .rating {
-            display: inline-block;
-            background: #ffd700;
-            color: #222;
-            padding: 4px 10px;
-            font-size: 15px;
-            border-radius: 6px;
-            font-weight: bold;
             margin-bottom: 15px;
         }
 
-        .descriptions p {
+        .price {
+            font-size: 28px;
+            color: #ff3d2e;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .rating {
             font-size: 16px;
-            line-height: 1.7;
+            background: #ffdd00;
+            padding: 4px 12px;
+            border-radius: 6px;
+            font-weight: 600;
+            display: inline-block;
+            margin-bottom: 20px;
+        }
+
+        .product-details p {
+            font-size: 16px;
             color: #444;
+            line-height: 1.7;
             margin-bottom: 12px;
         }
 
         .buy-btn {
-            background: linear-gradient(135deg, #ff6133, #ff2d00);
+            background: linear-gradient(135deg, #ff4e2f, #ff2600);
             color: white;
-            border: none;
-            padding: 14px 25px;
-            cursor: pointer;
+            padding: 14px 28px;
             border-radius: 50px;
             text-decoration: none;
-            font-weight: 600;
             font-size: 18px;
-            transition: .3s ease;
+            font-weight: 600;
             display: inline-block;
-            margin-top: 20px;
+            margin-top: 25px;
+            transition: 0.3s;
         }
 
         .buy-btn:hover {
-            background: linear-gradient(135deg, #ff2d00, #ff6133);
-            transform: translateY(-4px);
-            box-shadow: 0 10px 20px rgba(255, 70, 30, 0.4);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(255, 50, 20, 0.4);
+        }
+
+        /* POPUP FORM */
+        .popup-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.6);
+            display: none;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .popup-box {
+            background: #fff;
+            width: 400px;
+            padding: 25px;
+            border-radius: 12px;
+            text-align: center;
+            animation: fadeIn .4s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity:0; transform: scale(0.9); }
+            to { opacity:1; transform: scale(1); }
+        }
+
+        .popup-box input, .popup-box textarea {
+            width: 100%;
+            padding: 10px;
+            margin-top: 12px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            font-size: 15px;
+        }
+
+        .submit-btn {
+            background: #ff2600;
+            color: white;
+            padding: 10px 25px;
+            border-radius: 6px;
+            border: none;
+            margin-top: 15px;
+            cursor: pointer;
+            font-size: 17px;
+        }
+
+        .submit-btn:hover {
+            background: #ff4822;
+        }
+
+        .close {
+            float: right;
+            font-size: 20px;
+            cursor: pointer;
+            margin-top: -10px;
         }
     </style>
 </head>
 
 <body>
 
-<section class="product-detail">
-    <div class="product-card">
+<div class="product-container">
 
-        <div class="product-image">
-            {% if product.image %}
-            <img src="{{ product.image.url }}" alt="{{ product.name }}">
-            {% endif %}
-        </div>
+    <!-- LEFT IMAGE -->
+    <div class="product-image">
+        {% if product.image %}
+        <img src="{{ product.image.url }}" alt="{{ product.name }}">
+        {% endif %}
+    </div>
 
-        <h2 class="product-title">{{ product.name }}</h2>
-
+    <!-- RIGHT DETAILS -->
+    <div class="product-details">
+        <h2>{{ product.name }}</h2>
         <div class="price">₹{{ product.price }}</div>
-
         <div class="rating">⭐ {{ product.rating }}/5</div>
 
-        <div class="descriptions">
-            <p>{{ product.description1 }}</p>
-            <p>{{ product.description2 }}</p>
-        </div>
+        <p>{{ product.description1 }}</p>
+        <p>{{ product.description2 }}</p>
 
-        <a href="#" class="buy-btn">Buy Now</a>
-
+        <a class="buy-btn" onclick="openPopup()">Buy Now</a>
     </div>
-</section>
+
+</div>
+
+<!-- POPUP FORM -->
+<div class="popup-bg" id="popup">
+    <div class="popup-box">
+        <span class="close" onclick="closePopup()">×</span>
+        <h3>Place Your Order</h3>
+
+        <input type="text" id="order_name" placeholder="Your Name">
+        <input type="text" id="order_mobile" placeholder="Mobile Number">
+        <textarea id="order_address" rows="3" placeholder="Full Address"></textarea>
+
+        <button class="submit-btn" onclick="placeOrder()">Submit</button>
+    </div>
+</div>
+
+<script>
+    function openPopup() {
+        document.getElementById("popup").style.display = "flex";
+    }
+
+    function closePopup() {
+        document.getElementById("popup").style.display = "none";
+    }
+
+    function placeOrder() {
+        alert("🎉 Your order has been placed successfully!");
+        closePopup();
+    }
+</script>
 
 </body>
 </html>
